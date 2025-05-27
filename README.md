@@ -1,10 +1,8 @@
-![Frame 39265](https://github.com/user-attachments/assets/62877114-9fc9-4675-b7ba-0b302005f594)
+# Akvila.Core
 
-# Gml.Core
-
-Gml.Core is a core library for the Gml-Launcher project, providing essential functionality for the Minecraft launcher
+Akvila.Core is a core library for the AkvilaLauncher project, providing essential functionality for the Minecraft launcher
 ecosystem. It is designed to streamline the process of launching Minecraft, managing game versions, profiles, and
-server-side operations. This library serves as a foundation for other Gml-Launcher components, such as Gml.Web.Api,
+server-side operations. This library serves as a foundation for other AkvilaLauncher components, such as Akvila.Web.Api,
 enabling seamless integration and extensibility across the launcher ecosystem.
 
 ## Features
@@ -20,7 +18,7 @@ enabling seamless integration and extensibility across the launcher ecosystem.
 
 ## Prerequisites
 
-Before using Gml.Core, ensure you have the following installed:
+Before using Akvila.Core, ensure you have the following installed:
 
 - **.NET 8.0 SDK**: Required for building and running the library. Download it
   from [Microsoft's official website](https://dotnet.microsoft.com/download/dotnet/8.0).
@@ -30,8 +28,8 @@ Before using Gml.Core, ensure you have the following installed:
 
 1. **Clone the Repository**:
    ```bash
-   git clone --recursive https://github.com/Gml-Launcher/Gml.Core.git
-   cd Gml.Core
+   git clone --recursive https://github.com/AkvilaLauncher/Akvila.Core.git
+   cd Akvila.Core
    ```
 
 2. **Restore Dependencies**:
@@ -54,7 +52,7 @@ Before using Gml.Core, ensure you have the following installed:
 
 ## Usage
 
-Gml.Core is designed to be integrated into other projects within the Gml-Launcher ecosystem. Below is a basic example of
+Akvila.Core is designed to be integrated into other projects within the AkvilaLauncher ecosystem. Below is a basic example of
 how to use the library in a C# project.
 
 ### Example: Basic Usage
