@@ -6,7 +6,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\Akvila.Core.Interfaces\Akvila.Core.Interfaces.csproj" />
     <ProjectReference Include="..\Akvila.Core.Interfaces\Akvila.Core.Interfaces.csproj" />
   </ItemGroup>
 
