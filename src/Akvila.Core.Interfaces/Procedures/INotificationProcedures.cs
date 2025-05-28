@@ -1,0 +1,18 @@
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using AkvilaCore.Interfaces.Enums;
+using AkvilaCore.Interfaces.Notifications;
+
+namespace AkvilaCore.Interfaces.Procedures;
+
+public interface INotificationProcedures {
+    IObservable<INotification> Notifications { get; }
+    IEnumerable<INotification> History { get; }
+    Task SendMessage(string message);
+    Task SendMessage(string message, string details, NotificationType type);
+    Task SendMessage(string message, NotificationType type);
+    Task SendMessage(string message, Exception exception);
+    Task Retore();
+    Task Clear();
+}
