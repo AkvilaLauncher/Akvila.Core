@@ -1,0 +1,5 @@
+is_global = true
+build_property.RootNamespace = Modrinth.Api
+build_property.ProjectDir = /home/play/RiderProjects/Akvila.Web.Api/src/Akvila.Core/src/Modrinth.Api/src/Modrinth.Api/
+build_property.EnableComHosting = 
+build_property.EnableGeneratedComInterfaceComImportInterop = 

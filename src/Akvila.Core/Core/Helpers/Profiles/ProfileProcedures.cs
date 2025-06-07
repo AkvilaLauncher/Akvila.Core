@@ -116,6 +116,10 @@ namespace Akvila.Core.Helpers.Profiles {
             };
             await AddProfile(profile);
 
+            await AddFileToWhiteList(profile, [
+                new LocalFileInfo(Path.Combine("clients", profile.Name, "options.txt")),
+            ]);
+
             await AddFolderToWhiteList(profile, [
                 new LocalFolderInfo("saves"),
                 new LocalFolderInfo("logs"),
@@ -475,6 +479,16 @@ namespace Akvila.Core.Helpers.Profiles {
 
         public Task AddFileToWhiteList(IGameProfile profile, IFileInfo file) {
             AddWhiteListFileIfNotExists(profile, file);
+
+            return SaveProfiles();
+        }
+
+        public Task AddFileToWhiteList(IGameProfile profile, IEnumerable<IFileInfo> files)
+        {
+            foreach (var file in files)
+            {
+                AddWhiteListFileIfNotExists(profile, file);
+            }
 
             return SaveProfiles();
         }
