@@ -7,7 +7,7 @@ using AkvilaCore.Interfaces.Storage;
 
 namespace Akvila.Core.Launcher;
 
-public class AkvilaSettings : IGmlSettings {
+public class AkvilaSettings : IAkvilaSettings {
     private readonly ISystemProcedures _systemProcedures;
     public ISystemProcedures SystemProcedures => _systemProcedures;
 

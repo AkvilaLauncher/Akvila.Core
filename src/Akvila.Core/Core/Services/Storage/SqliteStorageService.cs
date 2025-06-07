@@ -23,10 +23,10 @@ public class SqliteStorageService : IStorageService {
     private const string DatabaseFileName = "data.db";
     private readonly SQLiteAsyncConnection _database;
     private readonly string _databasePath;
-    private readonly IGmlSettings _settings;
+    private readonly IAkvilaSettings _settings;
     private JsonSerializerSettings _bugsConverter;
 
-    public SqliteStorageService(IGmlSettings settings) {
+    public SqliteStorageService(IAkvilaSettings settings) {
         _settings = settings;
         _databasePath = Path.Combine(settings.InstallationDirectory, DatabaseFileName);
         _database = new SQLiteAsyncConnection(_databasePath);

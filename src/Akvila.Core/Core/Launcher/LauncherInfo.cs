@@ -19,19 +19,19 @@ public class AccessTokenTokens {
 }
 
 public class LauncherInfo : ILauncherInfo {
-    private readonly IGmlSettings _settings;
+    private readonly IAkvilaSettings _settings;
     private Subject<IStorageSettings> _settingsUpdated = new();
 
     public string Name => _settings.Name;
     public string BaseDirectory => _settings.BaseDirectory;
     public string InstallationDirectory => _settings.InstallationDirectory;
-    public IGmlSettings Settings => _settings;
+    public IAkvilaSettings Settings => _settings;
     public IStorageSettings StorageSettings { get; set; } = new StorageSettings();
     public IObservable<IStorageSettings> SettingsUpdated => _settingsUpdated;
     public IDictionary<string, string> AccessTokens { get; set; } = new ConcurrentDictionary<string, string>();
     public Dictionary<string, IVersionFile?> ActualLauncherVersion { get; set; } = new();
 
-    public LauncherInfo(IGmlSettings settings) {
+    public LauncherInfo(IAkvilaSettings settings) {
         _settings = settings;
     }
 

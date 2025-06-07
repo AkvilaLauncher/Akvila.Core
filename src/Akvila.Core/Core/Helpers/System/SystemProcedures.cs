@@ -22,10 +22,10 @@ using CmlLib.Core.Files;
 using CmlLib.Core.Java;
 
 namespace Akvila.Core.Helpers.System {
-    public class SystemProcedures(IGmlSettings gmlSettings) : ISystemProcedures {
+    public class SystemProcedures(IAkvilaSettings akvilaSettings) : ISystemProcedures {
         private string _installationDirectory;
         private string? _buildDotnetPath;
-        private readonly MinecraftJavaManifestResolver _javaManifestResolver = new(gmlSettings.HttpClient);
+        private readonly MinecraftJavaManifestResolver _javaManifestResolver = new(akvilaSettings.HttpClient);
         private IEnumerable<MinecraftJavaManifestMetadata>? _javaManifestMetadata;
         private Subject<string> _downloadLogs = new();
         public string? BuildDotnetPath => _buildDotnetPath;
@@ -74,7 +74,7 @@ namespace Akvila.Core.Helpers.System {
             try {
                 var system = SystemService.GetPlatform();
                 var dotnetName = system == "windows" ? "dotnet.exe" : "dotnet";
-                var dotnetDirectory = Path.Combine(gmlSettings.InstallationDirectory, "DotnetBuild");
+                var dotnetDirectory = Path.Combine(akvilaSettings.InstallationDirectory, "DotnetBuild");
                 var dotnetDirectoryPath = Path.Combine(dotnetDirectory, "dotnet-8");
                 var dotnetPath = Path.Combine(dotnetDirectoryPath, dotnetName);
                 if (!Directory.Exists(dotnetDirectory) || !File.Exists(dotnetPath)) {
@@ -139,7 +139,7 @@ namespace Akvila.Core.Helpers.System {
         public async Task DownloadFileAsync(string url, string destinationFilePath) {
             _downloadLogs.OnNext($"Starting download: {url}");
             using HttpResponseMessage response =
-                await gmlSettings.HttpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
+                await akvilaSettings.HttpClient.GetAsync(url, HttpCompletionOption.ResponseHeadersRead);
             response.EnsureSuccessStatusCode();
 
             long totalBytes = response.Content.Headers.ContentLength ?? -1L;
@@ -200,7 +200,7 @@ namespace Akvila.Core.Helpers.System {
                 foreach (var pingModel in mirrorsPing) {
                     try {
                         using var cts = new CancellationTokenSource(TimeSpan.FromMilliseconds(3000));
-                        HttpResponseMessage response = await gmlSettings.HttpClient.GetAsync(pingModel.Url,
+                        HttpResponseMessage response = await akvilaSettings.HttpClient.GetAsync(pingModel.Url,
                             HttpCompletionOption.ResponseHeadersRead, cts.Token);
 
                         if (response.StatusCode == HttpStatusCode.OK) {

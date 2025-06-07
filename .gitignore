@@ -457,4 +457,4 @@ $RECYCLE.BIN/
 !.vscode/launch.json
 !.vscode/extensions.json
 
-tests/GmlCore.Tests/.env
+tests/AkvilaCore.Tests/.env

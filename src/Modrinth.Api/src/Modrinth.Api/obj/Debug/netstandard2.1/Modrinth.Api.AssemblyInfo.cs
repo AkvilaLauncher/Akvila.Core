@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Modrinth.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+8b9f27bd01f3dd95101674c69e5c20a5e59d623c")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ec87970ed867d6ed9aaf02873e716627c707cf30")]
 [assembly: System.Reflection.AssemblyProductAttribute("Modrinth.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Modrinth.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

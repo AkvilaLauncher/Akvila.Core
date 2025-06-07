@@ -20,9 +20,9 @@ using AkvilaCore.Interfaces.Storage;
 namespace Akvila;
 
 public class AkvilaManager : IAkvilaManager {
-    private readonly IGmlSettings _settings;
+    private readonly IAkvilaSettings _settings;
 
-    public AkvilaManager(IGmlSettings settings) {
+    public AkvilaManager(IAkvilaSettings settings) {
         _settings = settings;
         LauncherInfo = new LauncherInfo(settings);
         Storage = new SqliteStorageService(settings);

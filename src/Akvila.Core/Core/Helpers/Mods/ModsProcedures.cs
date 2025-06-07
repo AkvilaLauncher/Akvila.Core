@@ -29,7 +29,7 @@ public class ModsProcedures : IModsProcedures {
     private readonly IBugTrackerProcedures _bugTracker;
 
     public ModsProcedures(ILauncherInfo launcherInfo,
-        IGmlSettings settings,
+        IAkvilaSettings settings,
         IStorageService storage,
         IBugTrackerProcedures bugTracker) {
         _storage = storage;

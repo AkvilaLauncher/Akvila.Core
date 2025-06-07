@@ -12,7 +12,7 @@ public interface ILauncherInfo {
     public string InstallationDirectory { get; }
     public IStorageSettings StorageSettings { get; set; }
     Dictionary<string, IVersionFile?> ActualLauncherVersion { get; set; }
-    IGmlSettings Settings { get; }
+    IAkvilaSettings Settings { get; }
     IObservable<IStorageSettings> SettingsUpdated { get; }
     IDictionary<string, string> AccessTokens { get; set; }
 

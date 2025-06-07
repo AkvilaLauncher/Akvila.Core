@@ -15,7 +15,7 @@ using AkvilaCore.Interfaces.Procedures;
 namespace Akvila.Core.Integrations;
 
 public class ServicesIntegrationProcedures(
-    IGmlSettings settings,
+    IAkvilaSettings settings,
     IStorageService storage,
     IBugTrackerProcedures bugTracker,
     AkvilaManager akvilaManager)

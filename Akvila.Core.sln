@@ -13,15 +13,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{94BDAC
 		LICENSE = LICENSE
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Core", "src\Gml.Core\Gml.Core.csproj", "{21CA74E3-F9EA-4640-B5EF-EA3428FEECE8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Akvila.Core", "src\Akvila.Core\Akvila.Core.csproj", "{21CA74E3-F9EA-4640-B5EF-EA3428FEECE8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Core.Interfaces", "src\Gml.Core.Interfaces\Gml.Core.Interfaces.csproj", "{3426695D-144A-4055-AC70-ED29B8180217}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Akvila.Core.Interfaces", "src\Akvila.Core.Interfaces\Akvila.Core.Interfaces.csproj", "{3426695D-144A-4055-AC70-ED29B8180217}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GmlCore.Tests", "tests\GmlCore.Tests\GmlCore.Tests.csproj", "{F437E3A7-05A0-481F-88F2-5769F116A39F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AkvilaCore.Tests", "tests\AkvilaCore.Tests\AkvilaCore.Tests.csproj", "{F437E3A7-05A0-481F-88F2-5769F116A39F}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CmlLib.Core.Installer.Forge", "src\CmlLib.Core.Installer.Forge\CmlLib.Core.Installer.Forge\CmlLib.Core.Installer.Forge.csproj", "{32674E30-4ED0-46F4-9133-696A21E6887A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Gml.Common", "src\Gml.Common\Gml.Common\Gml.Common.csproj", "{02F6EFE2-6A85-40EE-9E7A-F3E32CFDF075}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Akvila.Common", "src\Akvila.Common\Akvila.Common.csproj", "{02F6EFE2-6A85-40EE-9E7A-F3E32CFDF075}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pingo", "src\Pingo\Pingo\Pingo.csproj", "{FEBB9BAD-A445-4965-927C-3DED320900BD}"
 EndProject

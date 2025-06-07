@@ -4,7 +4,7 @@ using AkvilaCore.Interfaces.Storage;
 
 namespace AkvilaCore.Interfaces.Launcher;
 
-public interface IGmlSettings {
+public interface IAkvilaSettings {
     public string Name { get; }
     public string BaseDirectory { get; }
     public string InstallationDirectory { get; }

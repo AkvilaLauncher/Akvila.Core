@@ -22,11 +22,11 @@ using JwtRegisteredClaimNames = Microsoft.IdentityModel.JsonWebTokens.JwtRegiste
 namespace Akvila.Core.Helpers.User;
 
 public class UserProcedures : IUserProcedures {
-    private readonly IGmlSettings _settings;
+    private readonly IAkvilaSettings _settings;
     private readonly IStorageService _storage;
     private readonly AkvilaManager _akvilaManager;
 
-    public UserProcedures(IGmlSettings settings, IStorageService storage, AkvilaManager akvilaManager) {
+    public UserProcedures(IAkvilaSettings settings, IStorageService storage, AkvilaManager akvilaManager) {
         _settings = settings;
         _storage = storage;
         _akvilaManager = akvilaManager;
