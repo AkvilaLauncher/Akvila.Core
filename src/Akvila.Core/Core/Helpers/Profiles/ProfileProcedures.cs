@@ -62,10 +62,10 @@ public partial class ProfileProcedures : IProfileProcedures {
     private IReadOnlyList<LiteLoaderVersion>? _liteLoaderVersions;
 
     public ProfileProcedures(ILauncherInfo launcherInfo,
-                             IStorageService storageService,
-                             INotificationProcedures notifications,
-                             IBugTrackerProcedures bugTracker,
-                             AkvilaManager AkvilaManager) {
+        IStorageService storageService,
+        INotificationProcedures notifications,
+        IBugTrackerProcedures bugTracker,
+        AkvilaManager AkvilaManager) {
         _launcherInfo = launcherInfo;
         _storageService = storageService;
         _AkvilaManager = AkvilaManager;
@@ -92,12 +92,12 @@ public partial class ProfileProcedures : IProfileProcedures {
     }
 
     public async Task<IGameProfile?> AddProfile(string name,
-                                                string displayName,
-                                                string version,
-                                                string loaderVersion,
-                                                GameLoader loader,
-                                                string icon,
-                                                string description) {
+        string displayName,
+        string version,
+        string loaderVersion,
+        GameLoader loader,
+        string icon,
+        string description) {
         if (string.IsNullOrEmpty(name))
             ThrowHelper.ThrowArgumentNullException<string>(name);
 
@@ -105,27 +105,27 @@ public partial class ProfileProcedures : IProfileProcedures {
             ThrowHelper.ThrowArgumentNullException<string>(version);
 
         var profile = new GameProfile(name, displayName, version, loader) {
-                                                                              ProfileProcedures = this,
-                                                                              ServerProcedures = this,
-                                                                              IsEnabled = true,
-                                                                              CreateDate = DateTimeOffset.Now,
-                                                                              LaunchVersion = loaderVersion,
-                                                                              Description = description,
-                                                                              IconBase64 = icon
-                                                                          };
+            ProfileProcedures = this,
+            ServerProcedures = this,
+            IsEnabled = true,
+            CreateDate = DateTimeOffset.Now,
+            LaunchVersion = loaderVersion,
+            Description = description,
+            IconBase64 = icon
+        };
         await AddProfile(profile);
 
         await AddFileToWhiteList(profile, [
-                                              new LocalFileInfo(Path.Combine("clients", profile.Name, "options.txt")),
-                                          ]);
+            new LocalFileInfo(Path.Combine("clients", profile.Name, "options.txt")),
+        ]);
 
         await AddFolderToWhiteList(profile, [
-                                                new LocalFolderInfo("saves"),
-                                                new LocalFolderInfo("logs"),
-                                                new LocalFolderInfo("resourcepacks"),
-                                                new LocalFolderInfo("crash-reports"),
-                                                new LocalFolderInfo("config")
-                                            ]);
+            new LocalFolderInfo("saves"),
+            new LocalFolderInfo("logs"),
+            new LocalFolderInfo("resourcepacks"),
+            new LocalFolderInfo("crash-reports"),
+            new LocalFolderInfo("config")
+        ]);
 
         return profile;
     }
@@ -262,12 +262,12 @@ public partial class ProfileProcedures : IProfileProcedures {
         var hash = SystemHelper.CalculateFileHash(fileInfo.FullName, algorithm);
 
         return Task.FromResult<IFileInfo?>(new LocalFileInfo {
-                                                                 Name = Path.GetFileName(absolutePath),
-                                                                 Directory = directory,
-                                                                 FullPath = fileInfo.FullName,
-                                                                 Size = fileInfo.Length,
-                                                                 Hash = hash
-                                                             });
+            Name = Path.GetFileName(absolutePath),
+            Directory = directory,
+            FullPath = fileInfo.FullName,
+            Size = fileInfo.Length,
+            Hash = hash
+        });
 
     }
 
@@ -277,24 +277,24 @@ public partial class ProfileProcedures : IProfileProcedures {
         var localFiles = profileDirectoryInfo.GetFiles("*.*", SearchOption.AllDirectories);
 
         var localFilesInfo = await Task.WhenAll(localFiles.AsParallel().Select(c => {
-                                                                                   string hash;
+            string hash;
 
-                                                                                   if (_fileHashCache.TryGetValue(c.FullName, out var value)) {
-                                                                                       hash = value;
-                                                                                   } else {
-                                                                                       using var algorithm = SHA1.Create();
-                                                                                       hash = SystemHelper.CalculateFileHash(c.FullName, algorithm);
-                                                                                       _fileHashCache[c.FullName] = hash;
-                                                                                   }
+            if (_fileHashCache.TryGetValue(c.FullName, out var value)) {
+                hash = value;
+            } else {
+                using var algorithm = SHA1.Create();
+                hash = SystemHelper.CalculateFileHash(c.FullName, algorithm);
+                _fileHashCache[c.FullName] = hash;
+            }
 
-                                                                                   return Task.FromResult(new LocalFileInfo {
-                                                                                                                                Name = c.Name,
-                                                                                                                                Directory = c.FullName.Replace(
-                                                                                                                                    _launcherInfo.InstallationDirectory, string.Empty),
-                                                                                                                                Size = c.Length,
-                                                                                                                                Hash = hash
-                                                                                                                            });
-                                                                               }));
+            return Task.FromResult(new LocalFileInfo {
+                Name = c.Name,
+                Directory = c.FullName.Replace(
+                    _launcherInfo.InstallationDirectory, string.Empty),
+                Size = c.Length,
+                Hash = hash
+            });
+        }));
 
         return localFilesInfo;
     }
@@ -314,7 +314,7 @@ public partial class ProfileProcedures : IProfileProcedures {
         _ = profile.CreateUserSessionAsync(user);
 
         var profileDirectory = Path.Combine(profile.ClientPath, "platforms", startupOptions.OsName,
-                                            startupOptions.OsArch);
+            startupOptions.OsArch);
         var relativePath = Path.Combine("clients", profileName);
         var jvmArgs = new List<string>();
         var gameArguments = new List<string>();
@@ -325,9 +325,12 @@ public partial class ProfileProcedures : IProfileProcedures {
         var files =
             await profile.GetProfileFiles(startupOptions.OsName, startupOptions.OsArch);
 
-        if (files.Any(c => c.Name == Path.GetFileName(AuthLibUrl))) {
-            var authLibRelativePath = Path.Combine(profile.ClientPath, "libraries", "custom", Path.GetFileName(AuthLibUrl));
-            jvmArgs.Add($"-javaagent:{authLibRelativePath}={{authEndpoint}}");
+        var activeAuthService = await _AkvilaManager.Integrations.GetActiveAuthService();
+        if (activeAuthService?.AuthType != AuthType.Microsoft) {
+            if (files.Any(c => c.Name == Path.GetFileName(AuthLibUrl))) {
+                var authLibRelativePath = Path.Combine(profile.ClientPath, "libraries", "custom", Path.GetFileName(AuthLibUrl));
+                jvmArgs.Add($"-javaagent:{authLibRelativePath}={{authEndpoint}}");
+            }
         }
 
         if (profile.GameArguments is not null)
@@ -337,14 +340,15 @@ public partial class ProfileProcedures : IProfileProcedures {
 
         try {
             process = await profile.GameLoader.CreateProcess(startupOptions, user, false,
-                                                             jvmArgs.ToArray(), gameArguments.ToArray());
+                jvmArgs.ToArray(), gameArguments.ToArray());
         } catch (Exception exception) {
             _bugTracker.CaptureException(exception);
         }
+
         var arguments =
             process?.StartInfo.Arguments
-                   .Replace(profileDirectory, Path.Combine("{localPath}", relativePath))
-                   .Replace(_launcherInfo.InstallationDirectory, "{localPath}")
+                .Replace(profileDirectory, Path.Combine("{localPath}", relativePath))
+                .Replace(_launcherInfo.InstallationDirectory, "{localPath}")
             ?? string.Empty;
 
         var javaPath = process?.StartInfo.FileName.Replace(_launcherInfo.InstallationDirectory, "{localPath}") ??
@@ -352,43 +356,43 @@ public partial class ProfileProcedures : IProfileProcedures {
 
         if (process != null) {
             return new GameProfileInfo {
-                                           ProfileName = profile.Name,
-                                           DisplayName = profile.DisplayName,
-                                           Description = profile.Description,
-                                           IconBase64 = profile.IconBase64,
-                                           JvmArguments = profile.JvmArguments ?? string.Empty,
-                                           GameArguments = profile.GameArguments ?? string.Empty,
-                                           HasUpdate = profile.State != ProfileState.Loading,
-                                           Arguments = arguments,
-                                           JavaPath = javaPath,
-                                           State = profile.State,
-                                           ClientVersion = profile.GameVersion,
-                                           MinecraftVersion = profile.GameVersion,
-                                           LaunchVersion = profile.LaunchVersion ?? string.Empty,
-                                           Files = files.OfType<LocalFileInfo>(),
-                                           WhiteListFolders = profile.FolderWhiteList?.OfType<LocalFolderInfo>().ToList() ?? [],
-                                           WhiteListFiles = profile.FileWhiteList?.OfType<LocalFileInfo>().ToList() ?? []
-                                       };
+                ProfileName = profile.Name,
+                DisplayName = profile.DisplayName,
+                Description = profile.Description,
+                IconBase64 = profile.IconBase64,
+                JvmArguments = profile.JvmArguments ?? string.Empty,
+                GameArguments = profile.GameArguments ?? string.Empty,
+                HasUpdate = profile.State != ProfileState.Loading,
+                Arguments = arguments,
+                JavaPath = javaPath,
+                State = profile.State,
+                ClientVersion = profile.GameVersion,
+                MinecraftVersion = profile.GameVersion,
+                LaunchVersion = profile.LaunchVersion ?? string.Empty,
+                Files = files.OfType<LocalFileInfo>(),
+                WhiteListFolders = profile.FolderWhiteList?.OfType<LocalFolderInfo>().ToList() ?? [],
+                WhiteListFiles = profile.FileWhiteList?.OfType<LocalFileInfo>().ToList() ?? []
+            };
         }
 
         return new GameProfileInfo {
-                                       ProfileName = profile.Name,
-                                       DisplayName = profile.DisplayName,
-                                       Arguments = string.Empty,
-                                       JavaPath = string.Empty,
-                                       State = profile.State,
-                                       Files = files.OfType<LocalFileInfo>(),
-                                       IconBase64 = profile.IconBase64,
-                                       Description = profile.Description,
-                                       ClientVersion = profile.GameVersion,
-                                       JvmArguments = profile.JvmArguments ?? string.Empty,
-                                       GameArguments = profile.GameArguments ?? string.Empty,
-                                       LaunchVersion = profile.LaunchVersion ?? string.Empty,
-                                       WhiteListFolders = profile.FolderWhiteList?.OfType<LocalFolderInfo>().ToList() ?? [],
-                                       WhiteListFiles = profile.FileWhiteList?.OfType<LocalFileInfo>().ToList() ?? [],
-                                       HasUpdate = profile.State != ProfileState.Loading,
-                                       MinecraftVersion = profile.GameVersion
-                                   };
+            ProfileName = profile.Name,
+            DisplayName = profile.DisplayName,
+            Arguments = string.Empty,
+            JavaPath = string.Empty,
+            State = profile.State,
+            Files = files.OfType<LocalFileInfo>(),
+            IconBase64 = profile.IconBase64,
+            Description = profile.Description,
+            ClientVersion = profile.GameVersion,
+            JvmArguments = profile.JvmArguments ?? string.Empty,
+            GameArguments = profile.GameArguments ?? string.Empty,
+            LaunchVersion = profile.LaunchVersion ?? string.Empty,
+            WhiteListFolders = profile.FolderWhiteList?.OfType<LocalFolderInfo>().ToList() ?? [],
+            WhiteListFiles = profile.FileWhiteList?.OfType<LocalFileInfo>().ToList() ?? [],
+            HasUpdate = profile.State != ProfileState.Loading,
+            MinecraftVersion = profile.GameVersion
+        };
     }
 
     public async Task<IGameProfileInfo?> RestoreProfileInfo(
@@ -413,14 +417,14 @@ public partial class ProfileProcedures : IProfileProcedures {
             await SaveProfiles();
 
             return new GameProfileInfo {
-                                           ProfileName = profile.Name,
-                                           Arguments = process.StartInfo.Arguments.Replace(profile.ClientPath, "{localPath}"),
-                                           ClientVersion = profile.GameVersion,
-                                           HasUpdate = profile.State != ProfileState.Loading,
-                                           MinecraftVersion = profile.LaunchVersion.Split('-').First(),
-                                           Files = files.OfType<LocalFileInfo>(),
-                                           WhiteListFiles = files2.OfType<LocalFileInfo>()
-                                       };
+                ProfileName = profile.Name,
+                Arguments = process.StartInfo.Arguments.Replace(profile.ClientPath, "{localPath}"),
+                ClientVersion = profile.GameVersion,
+                HasUpdate = profile.State != ProfileState.Loading,
+                MinecraftVersion = profile.LaunchVersion.Split('-').First(),
+                Files = files.OfType<LocalFileInfo>(),
+                WhiteListFiles = files2.OfType<LocalFileInfo>()
+            };
         } catch (Exception exception) {
             _bugTracker.CaptureException(exception);
             throw new Exception($"Не удалось восстановить игровой профиль. {exception}");
@@ -435,51 +439,51 @@ public partial class ProfileProcedures : IProfileProcedures {
 
         var batchSize = 50;
         var batches = fileInfos.Select((file, index) => new { file, index })
-                               .GroupBy(x => x.index / batchSize)
-                               .Select(g => g.Select(x => x.file)).ToList();
+            .GroupBy(x => x.index / batchSize)
+            .Select(g => g.Select(x => x.file)).ToList();
 
         var totalFiles = fileInfos.Length;
         var processed = 0;
 
         foreach (var batch in batches) {
             await Task.WhenAll(batch.Select(async file => {
-                                                var percentage = processed * 100 / totalFiles;
-                                                try {
-                                                    var filePath = NormalizePath(_launcherInfo.InstallationDirectory, file.Directory);
+                var percentage = processed * 100 / totalFiles;
+                try {
+                    var filePath = NormalizePath(_launcherInfo.InstallationDirectory, file.Directory);
 
-                                                    switch (_launcherInfo.StorageSettings.StorageType) {
-                                                        case StorageType.LocalStorage:
-                                                            file.FullPath = filePath;
-                                                            if (await _storageService.GetAsync<LocalFileInfo>(file.Hash) is not { } localFile || !File.Exists(localFile.FullPath)) {
-                                                                await _storageService.SetAsync(file.Hash, file);
-                                                            }
+                    switch (_launcherInfo.StorageSettings.StorageType) {
+                        case StorageType.LocalStorage:
+                            file.FullPath = filePath;
+                            if (await _storageService.GetAsync<LocalFileInfo>(file.Hash) is not { } localFile || !File.Exists(localFile.FullPath)) {
+                                await _storageService.SetAsync(file.Hash, file);
+                            }
 
-                                                            break;
-                                                        case StorageType.S3:
-                                                            var tags = new Dictionary<string, string> {
-                                                                                                          { "hash", file.Hash },
-                                                                                                          { "file-name", file.Name }
-                                                                                                      };
+                            break;
+                        case StorageType.S3:
+                            var tags = new Dictionary<string, string> {
+                                { "hash", file.Hash },
+                                { "file-name", file.Name }
+                            };
 
-                                                            if (await _AkvilaManager.Files.CheckFileExists("profiles", file.Hash) == false) {
-                                                                await _AkvilaManager.Files.LoadFile(File.OpenRead(filePath), "profiles", file.Hash, tags);
-                                                            }
+                            if (await _AkvilaManager.Files.CheckFileExists("profiles", file.Hash) == false) {
+                                await _AkvilaManager.Files.LoadFile(File.OpenRead(filePath), "profiles", file.Hash, tags);
+                            }
 
-                                                            break;
-                                                        default:
-                                                            throw new ArgumentOutOfRangeException();
-                                                    }
-                                                } catch (Exception exception) {
-                                                    _bugTracker.CaptureException(exception);
-                                                    Console.WriteLine(exception);
-                                                    throw;
-                                                } finally {
-                                                    _packChanged.OnNext(percentage);
-                                                    Debug.WriteLine($"Compile percentage: {percentage} [{processed} / {totalFiles}]");
-                                                }
+                            break;
+                        default:
+                            throw new ArgumentOutOfRangeException();
+                    }
+                } catch (Exception exception) {
+                    _bugTracker.CaptureException(exception);
+                    Console.WriteLine(exception);
+                    throw;
+                } finally {
+                    _packChanged.OnNext(percentage);
+                    Debug.WriteLine($"Compile percentage: {percentage} [{processed} / {totalFiles}]");
+                }
 
-                                                processed++;
-                                            }));
+                processed++;
+            }));
         }
 
 
@@ -586,14 +590,14 @@ public partial class ProfileProcedures : IProfileProcedures {
 
     private string NormalizePath(string directory, string fileDirectory) {
         directory = directory
-                    .Replace('\\', Path.DirectorySeparatorChar)
-                    .Replace('/', Path.DirectorySeparatorChar);
+            .Replace('\\', Path.DirectorySeparatorChar)
+            .Replace('/', Path.DirectorySeparatorChar);
         // .TrimStart(Path.DirectorySeparatorChar);
 
         fileDirectory = fileDirectory
-                        .Replace('\\', Path.DirectorySeparatorChar)
-                        .Replace('/', Path.DirectorySeparatorChar)
-                        .TrimStart(Path.DirectorySeparatorChar);
+            .Replace('\\', Path.DirectorySeparatorChar)
+            .Replace('/', Path.DirectorySeparatorChar)
+            .TrimStart(Path.DirectorySeparatorChar);
 
         return Path.Combine(directory, fileDirectory);
     }
@@ -633,15 +637,15 @@ public partial class ProfileProcedures : IProfileProcedures {
     }
 
     public async Task UpdateProfile(IGameProfile profile,
-                                    string newProfileName,
-                                    string displayName,
-                                    Stream? icon,
-                                    Stream? backgroundImage,
-                                    string updateDtoDescription,
-                                    bool isEnabled,
-                                    string jvmArguments,
-                                    string gameArguments,
-                                    int priority) {
+        string newProfileName,
+        string displayName,
+        Stream? icon,
+        Stream? backgroundImage,
+        string updateDtoDescription,
+        bool isEnabled,
+        string jvmArguments,
+        string gameArguments,
+        int priority) {
         var directory =
             new DirectoryInfo(Path.Combine(_launcherInfo.InstallationDirectory, "clients", profile.Name));
         var newDirectory =
@@ -661,7 +665,7 @@ public partial class ProfileProcedures : IProfileProcedures {
             : await _AkvilaManager.Files.LoadFile(backgroundImage, "profile-backgrounds");
 
         await UpdateProfile(profile, newProfileName, displayName, iconBase64, backgroundKey, updateDtoDescription,
-                            needRenameFolder, directory, newDirectory, isEnabled, jvmArguments, gameArguments, priority);
+            needRenameFolder, directory, newDirectory, isEnabled, jvmArguments, gameArguments, priority);
     }
 
     private async Task<string> ConvertStreamToBase64Async(Stream stream) {
@@ -673,13 +677,13 @@ public partial class ProfileProcedures : IProfileProcedures {
     }
 
     private async Task UpdateProfile(IGameProfile profile, string newProfileName, string displayName,
-                                     string newIcon,
-                                     string backgroundImageKey,
-                                     string newDescription, bool needRenameFolder, DirectoryInfo directory, DirectoryInfo newDirectory,
-                                     bool isEnabled,
-                                     string jvmArguments,
-                                     string gameArguments,
-                                     int priority) {
+        string newIcon,
+        string backgroundImageKey,
+        string newDescription, bool needRenameFolder, DirectoryInfo directory, DirectoryInfo newDirectory,
+        bool isEnabled,
+        string jvmArguments,
+        string gameArguments,
+        int priority) {
         profile.Name = newProfileName;
         profile.DisplayName = displayName;
         profile.IconBase64 = newIcon;
@@ -718,7 +722,7 @@ public partial class ProfileProcedures : IProfileProcedures {
 
             using (var contentStream = await response.Content.ReadAsStreamAsync())
                 using (Stream fileStream = new FileStream(downloadingFileInfo.FullName, FileMode.Create,
-                                                          FileAccess.Write, FileShare.None, 8192, true)) {
+                           FileAccess.Write, FileShare.None, 8192, true)) {
                     await contentStream.CopyToAsync(fileStream);
                 }
         }
@@ -787,9 +791,9 @@ public partial class ProfileProcedures : IProfileProcedures {
                     }
 
                     return _forgeVersions[minecraftVersion]
-                           .OrderByDescending(c => c.IsRecommendedVersion)
-                           .ThenByDescending(c => c.Time)
-                           .Select(c => versionMapper.CreateInstaller(c).ForgeVersion.ForgeVersionName);
+                        .OrderByDescending(c => c.IsRecommendedVersion)
+                        .ThenByDescending(c => c.Time)
+                        .Select(c => versionMapper.CreateInstaller(c).ForgeVersion.ForgeVersionName);
 
                 case GameLoader.Fabric:
                     using (var client = new HttpClient()) {
@@ -798,11 +802,11 @@ public partial class ProfileProcedures : IProfileProcedures {
                         var loaders = await fabricLoader.GetLoaders(minecraftVersion);
 
                         var versions = loaders
-                                       .Where(c => !string.IsNullOrEmpty(c.Version))
-                                       .OrderBy(c => c.Stable)
-                                       .Select(c => c.Version!)
-                                       .ToList()
-                                       .AsReadOnly();
+                            .Where(c => !string.IsNullOrEmpty(c.Version))
+                            .OrderBy(c => c.Stable)
+                            .Select(c => c.Version!)
+                            .ToList()
+                            .AsReadOnly();
 
                         if (!_quiltVersions.Any(c => c.Key == minecraftVersion)) {
                             _quiltVersions[minecraftVersion] = versions;
@@ -822,9 +826,9 @@ public partial class ProfileProcedures : IProfileProcedures {
                     _liteLoaderVersions ??= await liteLoaderVersionLoader.GetAllLiteLoaders();
 
                     return _liteLoaderVersions
-                           .Select(c => c)
-                           .Where(c => c.BaseVersion == minecraftVersion)
-                           .Select(c => c.Version)!;
+                        .Select(c => c)
+                        .Where(c => c.BaseVersion == minecraftVersion)
+                        .Select(c => c.Version)!;
                 case GameLoader.NeoForge:
                     var neoForge = new NeoForgeInstaller(anyLauncher);
                     var neoForgeVersionMapper = new NeoForgeInstallerVersionMapper();
@@ -834,8 +838,8 @@ public partial class ProfileProcedures : IProfileProcedures {
                     }
 
                     return _neoForgeVersions[minecraftVersion]
-                           .Select(c => neoForgeVersionMapper.CreateInstaller(c).VersionName)
-                           .Reverse();
+                        .Select(c => neoForgeVersionMapper.CreateInstaller(c).VersionName)
+                        .Reverse();
                 case GameLoader.Quilt:
                     using (var client = new HttpClient()) {
                         var quiltLoader = new QuiltInstaller(client);
@@ -843,11 +847,11 @@ public partial class ProfileProcedures : IProfileProcedures {
                         var loaders = await quiltLoader.GetLoaders(minecraftVersion);
 
                         var versions = loaders
-                                       .Where(c => !string.IsNullOrEmpty(c.Version))
-                                       .OrderBy(c => c.Stable)
-                                       .Select(c => c.Version!)
-                                       .ToList()
-                                       .AsReadOnly();
+                            .Where(c => !string.IsNullOrEmpty(c.Version))
+                            .OrderBy(c => c.Stable)
+                            .Select(c => c.Version!)
+                            .ToList()
+                            .AsReadOnly();
 
                         if (!_fabricVersions.Any(c => c.Key == minecraftVersion)) {
                             _fabricVersions[minecraftVersion] = versions;
@@ -926,9 +930,9 @@ public partial class ProfileProcedures : IProfileProcedures {
 
             if (user is Core.User.User player) {
                 Task[] tasks = [
-                                   player.DownloadAndInstallCloakAsync(cloakUrl),
-                                   player.DownloadAndInstallSkinAsync(skinUrl),
-                               ];
+                    player.DownloadAndInstallCloakAsync(cloakUrl),
+                    player.DownloadAndInstallSkinAsync(skinUrl),
+                ];
 
                 Task.WaitAll(tasks);
 
@@ -946,8 +950,8 @@ public partial class ProfileProcedures : IProfileProcedures {
         var file = await profile.GameLoader.AddMod(fileName, streamData).ConfigureAwait(false);
 
         return new LocalProfileMod {
-                                       Name = Path.GetFileNameWithoutExtension(file.Name),
-                                   };
+            Name = Path.GetFileNameWithoutExtension(file.Name),
+        };
     }
 
     public async Task<IMod> AddOptionalMod(IGameProfile profile, string fileName, Stream streamData) {
@@ -958,11 +962,12 @@ public partial class ProfileProcedures : IProfileProcedures {
         if (!fileNameWithoutExtension.EndsWith("-optional-mod")) {
             fileName = $"{fileNameWithoutExtension}-optional-mod{extension}";
         }
+
         var file = await profile.GameLoader.AddMod(fileName, streamData).ConfigureAwait(false);
 
         return new LocalProfileMod {
-                                       Name = Path.GetFileNameWithoutExtension(file.Name),
-                                   };
+            Name = Path.GetFileNameWithoutExtension(file.Name),
+        };
     }
 
     public Task<bool> RemoveMod(IGameProfile profile, string modName) {

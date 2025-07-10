@@ -11,4 +11,5 @@ public enum AuthType {
     NamelessMC = 7,
     WebMCRReloaded = 8,
     WordPress = 9,
+    Microsoft = 10,
 }
