@@ -213,6 +213,7 @@ public class BaseProfile : IGameProfile {
 
         return files.Select(file => new LocalProfileMod {
             Name = Path.GetFileNameWithoutExtension(file.Name),
+            Hash = file.Hash
         }).OrderBy(c => c.Name);
     }
 
@@ -221,6 +222,7 @@ public class BaseProfile : IGameProfile {
 
         return files.Select(file => new LocalProfileMod {
             Name = Path.GetFileNameWithoutExtension(file.Name),
+            Hash = file.Hash
         }).OrderBy(c => c.Name);
     }
 

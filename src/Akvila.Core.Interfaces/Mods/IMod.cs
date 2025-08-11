@@ -7,6 +7,7 @@ public interface IMod {
     string Url { get; set; }
     ModType Type { get; }
     Stream Icon { get; set; }
+    string Hash { get; set; }
 }
 
 public enum ModType {

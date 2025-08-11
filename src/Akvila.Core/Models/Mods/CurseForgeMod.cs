@@ -16,4 +16,5 @@ public class CurseForgeMod : IExternalMod {
     public IReadOnlyCollection<IMod> Dependencies { get; set; }
     public ModType Type => ModType.CurseForge;
     public Stream Icon { get; set; }
+    public string Hash { get; set; }
 }

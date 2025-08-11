@@ -13,6 +13,7 @@ public class ModrinthMod : IExternalMod {
     public int FollowsCount { get; set; }
     public int DownloadCount { get; set; }
     public Stream Icon { get; set; }
+    public string Hash { get; set; }
     public IReadOnlyCollection<string> Files { get; set; }
     public IReadOnlyCollection<IMod> Dependencies { get; set; }
     public ModType Type => ModType.Modrinth;

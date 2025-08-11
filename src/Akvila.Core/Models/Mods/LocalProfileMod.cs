@@ -11,4 +11,5 @@ public class LocalProfileMod : IMod {
     public IEnumerable<string> Files { get; set; }
     public IEnumerable<IMod> Dependencies { get; set; }
     public ModType Type => ModType.Local;
+    public string Hash { get; set; }
 }
